@@ -87,7 +87,6 @@
 		}
 
 		_iref.setStatus = function(newStatus) {
-			console.log('set status ' + newStatus)
 			this.status = newStatus
 			if (typeof (_iref.settings.onStatusChange) === 'function') {
 				_iref.settings.onStatusChange()
@@ -106,7 +105,6 @@
 			var ws = this.ws
 
 			ws.onopen = function(e) {
-			//	console.log(iref.hash)
 				ws.send(JSON.stringify({
 					'type' : PACKET_TYPE_INIT
 				}))
@@ -114,7 +112,6 @@
 			}
 
 			ws.onerror = function(e) {
-				console.log('error')
 				_iref.setError("Internal error")
 			}
 
@@ -122,8 +119,6 @@
 
 				data = JSON.parse(message['data'])
 				if (data['result'] !== 'success') {
-					console.log('error')
-					console.log(data)
 					_iref.setError(data['message']);
 					return
 				}
@@ -143,9 +138,7 @@
 						_iref.setStatus(STATUS_DONE);
 						return
 					case PACKET_TYPE_OK:
-						console.log('ook')
 						if (_iref.status == STATUS_REQUEST_RECIPIENT) {
-							console.log('ok2')
 							_iref.setStatus(STATUS_WAITING_RECIPIENT)
 						}
 						return
@@ -157,13 +150,10 @@
 						}
 					
 						reply = data['data']
-						console.log('recp replied: ' +reply)
 
 					case PACKET_TYPE_HASH:
 						hash = data['data']
 
-						console.log(data)
-						console.log("h=" + hash)
 						if (typeof (_iref.settings.onReceive) === 'function') {
 							_iref.settings.onReceive(hash)
 						}
@@ -173,9 +163,6 @@
 						return				
 				}
 
-				console.log('arrived')
-				console.log(message)
-				console.log(message['data'])
 			}
 
 			ws.onclose = function(e) {
