@@ -1,4 +1,7 @@
+
+
 (function(window) {
+
 	function CloudServiceClient(_settings) {
 		var _iref = {};
 
@@ -25,7 +28,8 @@
 			'timeout': 10,
 			'onStatusChange' : null,
 			'onWord' : null,
-			'onReceive' : null
+			'onReceive' : null,
+			'onDone' : null
 		};
 
 
@@ -75,10 +79,16 @@
 			return r[this.status]
 		}
 
-		_iref.sendCoins = function(sh, stack) {
+		_iref.sendCoins = function(sh, amount, stack) {
+			if (!amount)
+				amount = 0;
+
+			amount = parseInt(amount)
+
 			this.ws.send(JSON.stringify({
 				'type' : PACKET_TYPE_COINS,
 				'word' : sh,
+				'amount' : amount,
 				'stack' : stack
 			}))
 
@@ -136,6 +146,12 @@
 						return
 					case PACKET_TYPE_DONE:
 						_iref.setStatus(STATUS_DONE);
+
+						hash = data['data']
+						if (typeof (_iref.settings.onDone) === 'function') {
+							_iref.settings.onDone(hash)
+						}
+
 						return
 					case PACKET_TYPE_OK:
 						if (_iref.status == STATUS_REQUEST_RECIPIENT) {
@@ -179,4 +195,5 @@
 	}
 
 	window.CloudServiceClient = CloudServiceClient
+
 })(window)

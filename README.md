@@ -24,12 +24,17 @@ CloudServer Client Javascript Library
 		console.log('Secret word received from server: ' + word)
         }
 
+	function onDone(hash) {
+		console.log('Coins have been sent. Your change https://escrow.cloudcoin.digital/cc.php?h=' + hash)
+	}
+
         var csc = new CloudServiceClient({
                 'url' : 'wss://escrow.cloudcoin.digital/ws/',
                 'onStatusChange' : statusChange,
                 'onWord' : onWord,
                 'onProgress' : onProgress,
-                'onReceive' : onReceive
+                'onReceive' : onReceive,
+		'onDone' : onDone
         })
 
 	var stack = '{}'
